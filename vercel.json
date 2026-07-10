@@ -1,6 +1,7 @@
 {
     "version": 2,
-    "framework": "vite",
+    "framework": null,
+    "buildCommand": "composer install --no-dev && npm run build",
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.6.0"
