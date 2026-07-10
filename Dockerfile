@@ -17,8 +17,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd \
     && docker-php-ext-install pdo_mysql pdo_pgsql mbstring zip exif pcntl bcmath gd ctype fileinfo xml
 
-RUN curl -fsSL https://nodesource.com | build_env=nodisplay bash - \
-    && apt-get install -y nodejs
+# 🌟 Node.js နှင့် NPM ကို အမှားကင်းစင်စွာ အလွယ်ကူဆုံး စနစ်တကျ သွင်းယူခြင်း
+RUN apt-get update && apt-get install -y nodejs npm
 
 # Enable Apache rewrite module
 RUN a2enmod rewrite
