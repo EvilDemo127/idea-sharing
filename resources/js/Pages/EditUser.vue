@@ -17,12 +17,9 @@
                             <!-- Profile Image Section -->
                             <div class="d-flex flex-column align-items-center mb-4 p-3 bg-light rounded-3 border border-dashed text-center">
                                 <div class="position-relative avatar-wrapper mb-2">
-                                    <img 
-                                        :src="user.image ? '/profile/' + user.image : '/images/default-avatar.png'"
-                                        class="rounded-circle border border-3 border-white shadow" 
-                                        style="width: 110px; height: 110px; object-fit: cover;"  
-                                        alt="Profile Preview"
-                                    />
+                                    <img :src="user.image ? `https://google.com{user.image}` : '/images/default-avatar.png'" class="rounded-circle border border-3 border-white shadow" style="width: 110px; height: 110px; object-fit: cover;" alt="profile preview" />
+
+
                                     <label for="image-upload" class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle shadow d-flex align-items-center justify-content-center cursor-pointer" style="width: 32px; height: 32px; cursor: pointer;">
                                         <i class="fas fa-camera small"></i>
                                     </label>

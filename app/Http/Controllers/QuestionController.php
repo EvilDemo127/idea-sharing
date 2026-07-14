@@ -17,7 +17,6 @@ class QuestionController extends Controller
     {
         $userId = Auth::id();
         $slug =request()->tag;
-        $search =request()->search;
         $questions = Question::with('user', 'comment', 'like', 'qsave', 'tag')
         
         //count of user lilke,comment,ect
@@ -36,12 +35,7 @@ class QuestionController extends Controller
         }])
 
         //search 
-        ->when($search, function ($query,$search) {
-            return $query->where(function ($qua) use ($search) {
-                $qua->where('title','like','%'.$search.'%')
-                ->orWhere('description','like'.$search.'%');
-            });
-        })
+        
         ->paginate(3)->withQueryString();
         return Inertia::render('Home', ['questions' => $questions]);
     }
@@ -135,11 +129,41 @@ class QuestionController extends Controller
         return response()->json(['success' => 'Success deleting ur question']);
     }
 
-    public function filter_question($slug)
+    //still not working
+     public function search_question(Request $request, $search)
     {
-        $questions = Question::whereHas('tag', function ($query) use ($slug) {
-            $query->where('slug', $slug);
-        })->get();
-        return response()->json(['questions'=>$questions]);
+        $userId = Auth::id();
+        $questions = Question::with('user', 'comment', 'like', 'qsave', 'tag')
+        ->withCount('like', 'comment', 'qsave')
+        ->withExists(['like as is_Like' => function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        }])
+        ->when($search, function ($query, $search) {
+            return $query->where(function ($qua) use ($search) {
+                $qua->where('title', 'like', '%' . $search . '%')
+                   ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        });
+
+        return response()->json([
+            'success' => true,
+            'questions' => $questions
+        ], 200);
+    }
+
+    public function edit_comment($id)
+    {
+        $comment=QuestionComment::find($id);
+        
+        $comment->comment=request()->comment;
+$comment->save();
+        return response()->json(['success'=>'Update Comment']);
+    }
+
+    public function delete_comment($id)
+    {
+         $comment=QuestionComment::find($id);
+         $comment->delete();
+         return response()->json(['success'=>'Success delete']);
     }
 }

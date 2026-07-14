@@ -16,7 +16,7 @@ use Illuminate\Validation\Rules\Password;
 
 class PageController extends Controller
 {
-    private function getGoogleDriveService()
+   private function getGoogleDriveService()
     {
         $client = new \Google\Client();
         $client->setClientId(env('GOOGLE_DRIVE_CLIENT_ID'));
@@ -24,6 +24,7 @@ class PageController extends Controller
         $client->refreshToken(env('GOOGLE_DRIVE_REFRESH_TOKEN'));
         return new Drive($client);
     }
+
 
 
     public function profilEdit()
@@ -47,7 +48,7 @@ class PageController extends Controller
 
                     $service->files->delete($user->image);
                 } catch (\Google\Service\Exception $e) {
-                   
+
                     Log::error('Google Drive file delete failed: ' . $e->getMessage());
                 }
             }
@@ -55,7 +56,7 @@ class PageController extends Controller
 
             $fileMetadata = new DriveFile([
                 'name' => time() . '_' . $request->file('image')->getClientOriginalName(),
-                'parents' => [env('GOOGLE_DRIVE_PROFILE_FOLDER_ID')]
+                'parents' => [env('GOOGLE_DRIVE_GALLERY_FOLDER_ID')]
             ]);
 
             $content = file_get_contents($request->file('image')->getRealPath());
@@ -73,7 +74,7 @@ class PageController extends Controller
             ]);
 
             $service->permissions->create($file->id, $permission);
-            $valData['image'] = $file->id;
+            $valData['image'] = $file->id.'/'.$fileMetadata->name;
         } else {
             unset($valData['image']);
         }

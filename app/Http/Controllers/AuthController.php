@@ -65,7 +65,7 @@ class AuthController extends Controller
 
             $fileMetadata = new DriveFile([
                 'name' => time() . '_' . $request->file('image')->getClientOriginalName(),
-                'parents' => [env('GOOGLE_DRIVE_PROFILE_FOLDER_ID')]
+                'parents' => [env('GOOGLE_DRIVE_GALLERY_FOLDER_ID')]
             ]);
 
             $content = file_get_contents($request->file('image')->getRealPath());

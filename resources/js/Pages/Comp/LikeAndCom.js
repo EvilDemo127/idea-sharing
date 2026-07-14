@@ -4,6 +4,8 @@ import { computed } from "vue";
 export function LikeAndCom() {
     const comment = ref("");
     const showCommentBox = ref(null);
+    const search = ref("");
+    const editCommentText = ref();
 
     //like handle
     const click_like = (like) => {
@@ -26,9 +28,6 @@ export function LikeAndCom() {
 
     //add comment handle
     const addComment = (comm) => {
-        console.log(comment.value);
-        console.log(comm);
-
         if (!comment || !comment.value || !comment.value.trim()) return;
 
         axios
@@ -64,6 +63,35 @@ export function LikeAndCom() {
             .catch();
     };
 
+    const editComment = (comm) => {
+        comm.edit = true;
+        editCommentText.value = comm.comment;
+    };
+
+    const saveComment = (comm) => {
+        console.log(editCommentText.value);
+        axios
+            .post(route("comment.edit", comm.id), {
+                comment: editCommentText.value,
+            })
+            .then((res) => {
+                comm.comment = editCommentText.value;
+                comm.edit = false;
+            })
+            .catch((err) => console.log(err));
+    };
+
+    const deleteComment = (comm) => {
+        console.log(comm);
+        axios
+            .post(route("comment.delete", comm.id))
+            .then((res) => {
+               console.log(res);
+               
+            })
+            .catch((err) => console.log(err));
+    };
+
     //delete question
     const deleteQues = (id) => {
         if (!confirm("Are You Sure.!?")) {
@@ -76,6 +104,18 @@ export function LikeAndCom() {
             .catch((err) => console.log(err));
     };
 
+    const searching = (searchtex) => {
+        axios
+            .get(route("question.search", search.value))
+            .then((res) => {
+                searchtex.comment.unshift(res.data.comment);
+                searchtex.comment_count = res.data.comment_count;
+                searchtex.like_count = res.data.like_count;
+                searchtex.is_Like = res.data.is_like;
+            })
+            .catch();
+    };
+
     return {
         comment,
         showCommentBox,
@@ -83,5 +123,11 @@ export function LikeAndCom() {
         click_like,
         addComment,
         deleteQues,
+        searching,
+        search,
+        editComment,
+        deleteComment,
+        saveComment,
+        editCommentText,
     };
 }

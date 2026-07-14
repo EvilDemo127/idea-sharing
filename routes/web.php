@@ -22,6 +22,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/question/store', [QuestionController::class, 'store_question'])->name('question.store');
     Route::post('/question/delete/{id}', [QuestionController::class, 'delete_question'])->name('question.delete');
     Route::get('/question/filter/{slug}', [QuestionController::class, 'filter_question'])->name('question.filter');
+    Route::get('/question/searching/{search}', [QuestionController::class, 'search_question'])->name('question.search');
+     Route::post('/comment/edit/{id}', [QuestionController::class, 'edit_comment'])->name('comment.edit');
+     Route::post('/comment/delete/{id}', [QuestionController::class, 'delete_comment'])->name('comment.delete');
 });
 
 Route::group(['middleware' => 'LoginCheck'], function () {

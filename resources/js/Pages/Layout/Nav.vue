@@ -35,7 +35,6 @@
                     </li>
                 </ul>
             </div>
-
             <!-- Right Elements / Actions -->
             <div class="d-flex align-items-center gap-3">
                 <!-- Notifications Dropdown -->
@@ -68,7 +67,7 @@
                         style="cursor: pointer;"
                     >
                         <img
-                            :src="user.image ? '/profile/' + user.image : '/images/default-avatar.png'"
+                           :src="user.image ? `https://google.com{user.image}`:''"
                             class="rounded-circle shadow-sm"
                             style="width: 32px; height: 32px; object-fit: cover;"
                             alt="Profile Avatar"
@@ -119,25 +118,31 @@
     <div class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
+                <form @submit.prevent ="LandC.searching">
                 <div class="input-group shadow-sm rounded-pill overflow-hidden bg-white border border-light">
-                    <span class="input-group-text bg-white border-0 ps-4 pe-2 text-muted">
+                    
+                        <span class="input-group-text bg-white border-0 ps-4 pe-2 text-muted">
                         <i class="fas fa-search"></i>
                     </span>
                     <input 
-                        type="search" 
+                        v-model="LandC.search.value"
+                        name="search"
+                        type="search"
                         id="form1" 
                         class="form-control border-0 py-3 shadow-none text-dark ps-2" 
                         placeholder="Search questions, topics or tags..."
                         style="font-size: 0.95rem;"
                     />
                     <button 
-                        type="button" 
+                        type="submit" 
                         class="btn btn-primary px-4 fw-bold border-0"
                         style="background: linear-gradient(45deg, #1266f1, #00b0ff); border-radius: 0 50rem 50rem 0 !important;"
                     >
                         Search
                     </button>
                 </div>
+                    </form>
+
             </div>
         </div>
     </div>
