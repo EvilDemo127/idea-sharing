@@ -166,4 +166,28 @@ $comment->save();
          $comment->delete();
          return response()->json(['success'=>'Success delete']);
     }
+
+    public function edit_question(Request $request,$id)
+    {
+        $question =Question::with('tag')->find($id);
+        return Inertia::render('QuestionUpdate',['question'=>$question]);
+    }
+
+    public function question_update(Request $request,$id)
+    {
+        $userId=Auth::id();
+        $question =Question::find($id);
+        $question->update([
+            'user_id'=>$userId,
+            'slug' => Str::slug($request->title),
+            'title'=>$request->title,
+            'description'=>$request->description
+        ]);
+        $question->tag()->sync($request->tag_id);
+        $question->load('tag');
+        return response()->json([
+        'success'=>'Success Update',    
+        'question'=>$question]);
+    }
+
 }

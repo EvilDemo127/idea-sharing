@@ -45,8 +45,7 @@ export function LikeAndCom() {
 
     //reply comment handle
     const addCommentandReply = (comm) => {
-        console.log(comment.value);
-        console.log(comm);
+
 
         if (!comment || !comment.value || !comment.value.trim()) return;
 
@@ -69,7 +68,6 @@ export function LikeAndCom() {
     };
 
     const saveComment = (comm) => {
-        console.log(editCommentText.value);
         axios
             .post(route("comment.edit", comm.id), {
                 comment: editCommentText.value,
@@ -82,11 +80,9 @@ export function LikeAndCom() {
     };
 
     const deleteComment = (comm) => {
-        console.log(comm);
         axios
             .post(route("comment.delete", comm.id))
             .then((res) => {
-               console.log(res);
                
             })
             .catch((err) => console.log(err));

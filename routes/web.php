@@ -25,6 +25,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/question/searching/{search}', [QuestionController::class, 'search_question'])->name('question.search');
      Route::post('/comment/edit/{id}', [QuestionController::class, 'edit_comment'])->name('comment.edit');
      Route::post('/comment/delete/{id}', [QuestionController::class, 'delete_comment'])->name('comment.delete');
+     Route::get('/question/edit/{id}', [QuestionController::class, 'edit_question'])->name('edit_question');
+     Route::post('/question/update/{id}', [QuestionController::class, 'question_update'])->name('update_question');
 });
 
 Route::group(['middleware' => 'LoginCheck'], function () {

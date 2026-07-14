@@ -73,6 +73,13 @@
                             style="font-size: 0.8rem"
                             ><i class="fas fa-tools"></i> Fix?</Link
                         >
+                        <Link
+                            :href="route('edit_question',q.id)"
+                            class="btn btn-sm btn-link text-warning p-0 fw-bold text-decoration-none"
+                            style="font-size: 0.8rem"
+                        >
+                            <i class="far fa-keyboard"></i> Edit?
+                        </Link>
                         <button
                             @click="LandC.deleteQues(q.id)"
                             class="btn btn-sm btn-link text-danger p-0 fw-bold text-decoration-none"
