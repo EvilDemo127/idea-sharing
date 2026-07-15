@@ -34,8 +34,8 @@ class QuestionController extends Controller
             $query->where('user_id', $userId);
         }])
 
-        //search 
-        
+        ->orderBy('is_fixed','desc')
+        ->latest()
         ->paginate(3)->withQueryString();
         return Inertia::render('Home', ['questions' => $questions]);
     }
@@ -44,7 +44,7 @@ class QuestionController extends Controller
     {
         $userId = Auth::id();
 
-        $ques = Question::where('slug', $slug)->with('comment.user', 'user')->withCount('like', 'comment', 'qsave')->withExists(['like as is_Like' => function ($query) use ($userId) {
+        $ques = Question::where('slug', $slug)->with('comment.user', 'user','tag')->withCount('like', 'comment', 'qsave')->withExists(['like as is_Like' => function ($query) use ($userId) {
             $query->where('user_id', $userId);
         }])->firstOrFail();
         return Inertia::render('QuestionDetail', ['ques' => $ques]);
@@ -57,7 +57,8 @@ class QuestionController extends Controller
 
         $isLike = $questionLike->like()->toggle($user);
         $like = count($isLike['attached']) > 0;
-        $likeCount = $questionLike->like()->count();
+        $questionLike->loadCount('like');
+        $likeCount = $questionLike->like_count;
         return response()->json([
             'is_like' => $like,
             'like_count' => $likeCount
@@ -143,7 +144,7 @@ class QuestionController extends Controller
                 $qua->where('title', 'like', '%' . $search . '%')
                    ->orWhere('description', 'like', '%' . $search . '%');
             });
-        });
+        })->get();
 
         return response()->json([
             'success' => true,
@@ -185,9 +186,15 @@ $comment->save();
         ]);
         $question->tag()->sync($request->tag_id);
         $question->load('tag');
-        return response()->json([
-        'success'=>'Success Update',    
-        'question'=>$question]);
+        return redirect()->route('home');
+    }
+
+    public function question_fix($id)
+    {
+        $question =Question::find($id);
+         $question->is_fixed = !$question->is_fixed;
+         $question->save();
+        return redirect()->back();
     }
 
 }

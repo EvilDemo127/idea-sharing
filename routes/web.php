@@ -27,6 +27,7 @@ Route::group(['middleware' => 'auth'], function () {
      Route::post('/comment/delete/{id}', [QuestionController::class, 'delete_comment'])->name('comment.delete');
      Route::get('/question/edit/{id}', [QuestionController::class, 'edit_question'])->name('edit_question');
      Route::post('/question/update/{id}', [QuestionController::class, 'question_update'])->name('update_question');
+     Route::post('/question/fix/{id}', [QuestionController::class, 'question_fix'])->name('fix_question');
 });
 
 Route::group(['middleware' => 'LoginCheck'], function () {

@@ -72,12 +72,14 @@
 }
 .tag-checkbox-label:hover .tag-pill {
     transform: translateY(-1px);
+   
 }
 </style>
 <script setup>
 import axios from 'axios';
 import Master from './Layout/Master.vue';
 import { Link, useForm } from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
 
 const props = defineProps({
     question:Object,
@@ -90,20 +92,12 @@ const form =useForm({
     tag_id: props.question.tag ? props.question.tag.map(t => t.id) : []
 });
 
-const update_question=(id)=>{
-    axios.post(route('update_question',id),form)
-    .then(res=>{
-        console.log(res);
-        if(res.data.success)
-            {
-                form.title =props.question.title
-                form.description =props.question.description
-                form.tag_id =props.question.tag.map(t => t.id)
-            }
-        
-    })
-    .catch(err=>console.log(err)
-    )
+const update_question = (id) => {
+    form.post(route('update_question', id), {
+        onSuccess: () => {
+            
+        }
+    });
 }
 
 </script>

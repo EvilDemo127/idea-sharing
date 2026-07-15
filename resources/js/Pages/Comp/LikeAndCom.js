@@ -1,11 +1,14 @@
 import { ref } from "vue";
 import axios from "axios";
 import { computed } from "vue";
+import { router,usePage } from "@inertiajs/vue3";
+
 export function LikeAndCom() {
     const comment = ref("");
     const showCommentBox = ref(null);
     const search = ref("");
     const editCommentText = ref();
+    const page =usePage();
 
     //like handle
     const click_like = (like) => {
@@ -104,15 +107,33 @@ export function LikeAndCom() {
         axios
             .get(route("question.search", search.value))
             .then((res) => {
-                searchtex.comment.unshift(res.data.comment);
-                searchtex.comment_count = res.data.comment_count;
-                searchtex.like_count = res.data.like_count;
-                searchtex.is_Like = res.data.is_like;
+                console.log(res);
+                
+                // searchtex.comment.unshift(res.data.comment);
+                // searchtex.comment_count = res.data.comment_count;
+                // searchtex.like_count = res.data.like_count;
+                // searchtex.is_Like = res.data.is_like;
             })
             .catch();
     };
 
+    const isOwner = (id) => {
+        return page.props?.user?.id == id;
+    };
+
+    const needFixed =(id)=>{
+        router.post(route('fix_question',id),{
+            preserveScroll: true,
+            onSuccess:()=>{
+                console.log('success');
+                
+            }
+        });
+        
+    }
+
     return {
+        isOwner,
         comment,
         showCommentBox,
         toggleCommentBox,
@@ -125,5 +146,6 @@ export function LikeAndCom() {
         deleteComment,
         saveComment,
         editCommentText,
+        needFixed
     };
 }

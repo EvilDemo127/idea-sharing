@@ -13,9 +13,35 @@
                         <h5 class="text-dark fw-bold m-0 text-truncate ms-1" style="max-width: 400px;">{{ ques.title }}</h5>
                     </div>
                     <!-- Owner Actions Links -->
-                    <div class="d-flex gap-2">
-                        <a href="" class="btn btn-sm btn-link text-warning p-0 fw-bold text-decoration-none" style="font-size: 0.8rem;"><i class="fas fa-tools"></i> Fixed?</a>
-                        <a href="" class="btn btn-sm btn-link text-danger p-0 fw-bold text-decoration-none" style="font-size: 0.8rem;"><i class="fas fa-trash-alt"></i> Delete?</a>
+                    <div class="d-flex gap-2" v-if="LandC.isOwner(ques.user_id)">
+                        <button
+                        @click.prevent="LandC.needFixed(ques.id)"
+                            v-show="!ques.is_fixed"
+                            class="btn btn-sm btn-link text-warning p-0 fw-bold text-decoration-none"
+                            style="font-size: 0.8rem"
+                            ><i class="fas fa-thumbtack"></i> Fix?</button
+                        >
+                         <button
+                         @click.prevent="LandC.needFixed(ques.id)"
+                            v-show="ques.is_fixed"
+                            class="btn btn-sm btn-link text-warning p-0 fw-bold text-decoration-none"
+                            style="font-size: 0.8rem"
+                            ><i class="fas fa-thumbtack" style="transform: rotate(45deg);"></i> UnFix?</button
+                        >
+                        <Link
+                            :href="route('edit_question',ques.id)"
+                            class="btn btn-sm btn-link text-warning p-0 fw-bold text-decoration-none"
+                            style="font-size: 0.8rem"
+                        >
+                            <i class="far fa-keyboard"></i> Edit?
+                        </Link>
+                         <button
+                            @click="LandC.deleteQues(ques.id)"
+                            class="btn btn-sm btn-link text-danger p-0 fw-bold text-decoration-none"
+                            style="font-size: 0.8rem"
+                        >
+                            <i class="fas fa-trash-alt"></i> Delete?
+                        </button>
                     </div>
                 </div>
 
@@ -50,17 +76,36 @@
                             </a>
                         </div>
                     </div>
-
+                    
                     <!-- COLLAPSIBLE REPLIES & COMMENT BOX SECTION -->
                     <div class="mt-4 pt-3 border-top border-light fade-in" v-if="LandC.showCommentBox.value === ques.id || LandC.showCommentBox === ques.id">
                         <!-- Submit Form -->
-                        <form @submit.prevent="LandC.addCommentandReply(ques)">
+                        <!-- <form @submit.prevent="LandC.addCommentandReply(ques)">
                             <div class="input-group shadow-sm rounded-3 overflow-hidden border bg-white p-1 mb-4">
                                 <input type="text" class="form-control border-0 py-2 shadow-none text-dark ps-3" v-model="comment" placeholder="Share your reply or technical solution..." style="font-size: 0.9rem;" />
                                 <button class="btn btn-success px-4 py-2 fw-bold text-capitalize border-0" type="submit" style="border-radius: 6px !important;">Submit</button>
                             </div>
+                        </form> -->
+                        <form @submit.prevent="LandC.addComment(ques)">
+                            <div
+                                class="input-group shadow-sm rounded-3 overflow-hidden border bg-white p-1 mb-4"
+                            >
+                                <input
+                                    type="text"
+                                    class="form-control border-0 py-2 shadow-none text-dark ps-3"
+                                    v-model="LandC.comment.value"
+                                    placeholder="Share your technical solution..."
+                                    style="font-size: 0.9rem"
+                                />
+                                <button
+                                    class="btn btn-success px-4 py-2 fw-bold text-capitalize border-0"
+                                    type="submit"
+                                    style="border-radius: 6px !important"
+                                >
+                                    Submit
+                                </button>
+                            </div>
                         </form>
-
                         <!-- Clean Comments Wrapper -->
                         <div class="d-flex flex-column gap-3 mb-2">
                             <div class="bg-light rounded-3 p-3 border border-light" v-for="q in ques.comment" :key="q.id">
@@ -71,8 +116,77 @@
                                     </div>
                                     <span class="text-muted small" style="font-size: 0.75rem;"><i class="far fa-clock me-1"></i>{{ q.date || 'just now' }}</span>
                                 </div>
-                                <p class="mb-0 text-secondary ps-1" style="font-size: 0.9rem; line-height: 1.5; white-space: pre-line;">{{ q.comment }}</p>
+                                
+                               <div class="d-flex justify-content-between align-items-center"  >
+                                    <p
+                                        v-if="!q.edit"
+                                        class="mb-0 mt-1 text-secondary ps-1"
+                                        style="
+                                            font-size: 0.9rem;
+                                            line-height: 1.5;
+                                            white-space: pre-line;
+                                        "
+                                    >
+                                        {{ q.comment }}
+                                    </p>
+                                    <input
+                                       v-else
+                                        type="text"
+                                        v-model="LandC.editCommentText.value"
+                                        class="form-control text-dark "
+                                        style="
+                                            font-size: 0.9rem;
+                                            line-height: 1.5;
+                                        "
+                                    />
+
+                                    <div
+                                        v-if= "!q.edit && LandC.isOwner(q.user_id)"
+                                        class="d-flex gap-1 justify-content-end w-25"
+                                    >
+                                        <button
+                                            @click.prevent="
+                                                LandC.editComment(q)
+                                            "
+                                            class="btn btn-sm btn-warning py-0 px-1"
+                                            style="font-size: 0.8rem"
+                                        >
+                                            edit
+                                        </button>
+                                        <button
+                                            @click.prevent="
+                                                LandC.deleteComment(q)
+                                            "
+                                            class="btn btn-sm btn-danger py-0 px-1"
+                                            style="font-size: 0.8rem"
+                                        >
+                                            delete
+                                        </button>
+                                    </div>
+                                    <div
+                                    v-if="q.edit && LandC.isOwner(q.user_id,q.user)"
+                                        class="d-flex gap-1 justify-content-end w-25"
+                                    >
+                                        <button
+                                            @click.prevent="
+                                                LandC.saveComment(q,q.comment)
+                                            "
+                                            class="btn btn-sm btn-warning py-0 px-1"
+                                            style="font-size: 0.8rem"
+                                        >
+                                            save
+                                        </button>
+                                        <button
+                                            @click.prevent="q.edit = false"
+                                            class="btn btn-sm btn-danger py-0 px-1"
+                                            style="font-size: 0.8rem"
+                                        >
+                                            cancel
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
+                            
                         </div>
                     </div>
 
@@ -92,7 +206,7 @@
 </style>
 
 <script setup>
-import { usePage } from '@inertiajs/vue3';
+import { usePage,Link } from '@inertiajs/vue3';
 import Master from './Layout/Master.vue';
 import { ref } from 'vue';
 import axios from 'axios';

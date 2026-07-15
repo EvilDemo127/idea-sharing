@@ -66,12 +66,20 @@
                         >
                     </div>
                     <!-- Owner Actions -->
-                    <div class="d-flex gap-2" v-show="isOwner(q.user_id)">
-                        <Link
-                            href=""
+                    <div class="d-flex gap-2" v-if="LandC.isOwner(q.user_id,q.user)">
+                        <button
+                        @click.prevent="LandC.needFixed(q.id)"
+                            v-show="!q.is_fixed"
                             class="btn btn-sm btn-link text-warning p-0 fw-bold text-decoration-none"
                             style="font-size: 0.8rem"
-                            ><i class="fas fa-tools"></i> Fix?</Link
+                            ><i class="fas fa-thumbtack"></i> Fix?</button
+                        >
+                         <button
+                         @click.prevent="LandC.needFixed(q.id)"
+                            v-show="q.is_fixed"
+                            class="btn btn-sm btn-link text-warning p-0 fw-bold text-decoration-none"
+                            style="font-size: 0.8rem"
+                            ><i class="fas fa-thumbtack" style="transform: rotate(45deg);"></i> UnFix?</button
                         >
                         <Link
                             :href="route('edit_question',q.id)"
@@ -232,7 +240,7 @@
                                         >{{ com.date }}</span
                                     >
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center ">
+                                <div class="d-flex justify-content-between align-items-center" >
                                     <p
                                         v-if="!com.edit"
                                         class="mb-0 mt-1 text-secondary ps-1"
@@ -256,7 +264,7 @@
                                     />
 
                                     <div
-                                        v-if="!com.edit"
+                                        v-if="!com.edit && LandC.isOwner(com.user_id)"
                                         class="d-flex gap-1 justify-content-end w-25"
                                     >
                                         <button
@@ -270,7 +278,7 @@
                                         </button>
                                         <button
                                             @click.prevent="
-                                                LandC.deleteComment(com,)
+                                                LandC.deleteComment(com)
                                             "
                                             class="btn btn-sm btn-danger py-0 px-1"
                                             style="font-size: 0.8rem"
@@ -278,8 +286,9 @@
                                             delete
                                         </button>
                                     </div>
+                                    
                                     <div
-                                        v-else
+                                    v-if="com.edit && LandC.isOwner(com.user_id)"
                                         class="d-flex gap-1 justify-content-end w-25"
                                     >
                                         <button
@@ -358,13 +367,7 @@ defineProps({
 const page = usePage();
 const LandC = LikeAndCom();
 
-// check post owner
-const isOwner = (id) => {
-    if (page.props.user.id == id) {
-        return true;
-    }
-    return false;
-};
+
 
 // login alert
 if (page.props.flash?.success) {
@@ -374,4 +377,5 @@ if (page.props.flash?.success) {
     });
     page.props.flash.success = null;
 }
+
 </script>
