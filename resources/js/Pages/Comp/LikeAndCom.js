@@ -1,15 +1,16 @@
 import { ref } from "vue";
 import axios from "axios";
 import { computed } from "vue";
-import { router,usePage } from "@inertiajs/vue3";
+import { router, usePage } from "@inertiajs/vue3";
 
 export function LikeAndCom() {
     const comment = ref("");
     const showCommentBox = ref(null);
     const search = ref("");
     const editCommentText = ref();
-    const page =usePage();
-
+    const page = usePage();
+    const activeDropdownId = ref(null);
+    const mobileMenuVie = ref(null);
     //like handle
     const click_like = (like) => {
         axios
@@ -21,13 +22,13 @@ export function LikeAndCom() {
             .catch((err) => console.log(err));
     };
 
-    //question save 
+    //question save
     const click_save = (save) => {
         axios
             .post(route("save.handle", save.id))
             .then((res) => {
                 console.log(res.data.is_Save);
-                
+
                 save.qsave_count = res.data.qsave_count;
                 save.is_Save = res.data.is_Save;
             })
@@ -40,6 +41,15 @@ export function LikeAndCom() {
         } else {
             showCommentBox.value = id;
         }
+    };
+
+    const mobileMenu = (id) => {
+        console.log(id);
+        console.log(mobileMenuVie.value);
+        
+        return mobileMenuVie.value === id
+            ? (mobileMenuVie.value = null)
+            : (mobileMenuVie.value = id);
     };
 
     //add comment handle
@@ -61,8 +71,6 @@ export function LikeAndCom() {
 
     //reply comment handle
     const addCommentandReply = (comm) => {
-
-
         if (!comment || !comment.value || !comment.value.trim()) return;
 
         axios
@@ -98,9 +106,7 @@ export function LikeAndCom() {
     const deleteComment = (comm) => {
         axios
             .post(route("comment.delete", comm.id))
-            .then((res) => {
-               
-            })
+            .then((res) => {})
             .catch((err) => console.log(err));
     };
 
@@ -121,7 +127,7 @@ export function LikeAndCom() {
             .get(route("question.search", search.value))
             .then((res) => {
                 console.log(res);
-                
+
                 // searchtex.comment.unshift(res.data.comment);
                 // searchtex.comment_count = res.data.comment_count;
                 // searchtex.like_count = res.data.like_count;
@@ -134,16 +140,14 @@ export function LikeAndCom() {
         return page.props?.user?.id == id;
     };
 
-    const needFixed =(id)=>{
-        router.post(route('fix_question',id),{
+    const needFixed = (id) => {
+        router.post(route("fix_question", id), {
             preserveScroll: true,
-            onSuccess:()=>{
-                console.log('success');
-                
-            }
+            onSuccess: () => {
+                console.log("success");
+            },
         });
-        
-    }
+    };
 
     return {
         isOwner,
@@ -160,6 +164,9 @@ export function LikeAndCom() {
         saveComment,
         editCommentText,
         needFixed,
-        click_save
+        click_save,
+        mobileMenuVie,
+        mobileMenu,
+        activeDropdownId
     };
 }

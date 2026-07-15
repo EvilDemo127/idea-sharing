@@ -40,7 +40,7 @@ class QuestionController extends Controller
         }])
         ->orderBy('is_fixed','desc')
         ->orderBy('created_at', 'desc')
-        ->paginate(3)->withQueryString();
+        ->paginate(5)->withQueryString();
         return Inertia::render('Home', ['questions' => $questions]);
     }
 
@@ -125,7 +125,7 @@ class QuestionController extends Controller
     {
         $userId = Auth::id();
         // $questions =Question::where('user_id',Auth::id())->get();
-        $questions = Auth::user()->questions()->with(['user', 'comment'])->withCount('like', 'comment', 'qsave')->withExists(['like as is_Like' => function ($query) use ($userId) {
+        $questions = Auth::user()->questions()->with(['comment.user','user', 'comment'])->withCount('like', 'comment', 'qsave')->withExists(['like as is_Like' => function ($query) use ($userId) {
             $query->where('user_id', $userId);
         }])
         ->withExists(['qsave as is_Save' => function ($query) use ($userId) {
