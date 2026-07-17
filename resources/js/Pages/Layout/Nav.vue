@@ -66,8 +66,9 @@
                         role="button"
                         style="cursor: pointer;"
                     >
+                        <!-- when i use https://google.com/d/${user.image} it seeing error -->
                         <img
-                           :src="user.image ? `https://google.com{user.image}`:''"
+                           :src="user.image ? `https://lh3.googleusercontent.com/d/${user.image}`:''"
                             class="rounded-circle shadow-sm"
                             style="width: 32px; height: 32px; object-fit: cover;"
                             alt="Profile Avatar"

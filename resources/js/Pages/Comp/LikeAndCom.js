@@ -46,7 +46,7 @@ export function LikeAndCom() {
     const mobileMenu = (id) => {
         console.log(id);
         console.log(mobileMenuVie.value);
-        
+
         return mobileMenuVie.value === id
             ? (mobileMenuVie.value = null)
             : (mobileMenuVie.value = id);
@@ -122,18 +122,12 @@ export function LikeAndCom() {
             .catch((err) => console.log(err));
     };
 
-    const searching = (searchtex) => {
-        axios
-            .get(route("question.search", search.value))
-            .then((res) => {
-                console.log(res);
-
-                // searchtex.comment.unshift(res.data.comment);
-                // searchtex.comment_count = res.data.comment_count;
-                // searchtex.like_count = res.data.like_count;
-                // searchtex.is_Like = res.data.is_like;
-            })
-            .catch();
+    const searching = () => {
+        if(!search.value || !search.value.trim()) return 
+        router.get(route("question.search", search.value),{}, {
+            preserveState: true,
+            replace: true,
+        });
     };
 
     const isOwner = (id) => {
@@ -167,6 +161,6 @@ export function LikeAndCom() {
         click_save,
         mobileMenuVie,
         mobileMenu,
-        activeDropdownId
+        activeDropdownId,
     };
 }

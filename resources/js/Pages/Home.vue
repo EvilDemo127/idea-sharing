@@ -348,11 +348,10 @@
                                     <div
                                         class="d-flex align-items-center gap-2.5"
                                     >
-                                        <!-- <img
+                                        <img
                                             :src="
                                                 com.user.image
-                                                    ? '/profile/' +
-                                                      com.user.image
+                                                    ? `https://lh3.googleusercontent.com/d/${com.user.image}`
                                                     : '/images/default-avatar.png'
                                             "
                                             
@@ -363,8 +362,8 @@
                                                 object-fit: cover;
                                             "
                                             alt="User Avatar"
-                                        /> -->
-                                        <div class="d-flex flex-column lh-sm">
+                                        />
+                                        <div class="d-flex flex-column lh-sm ps-2">
                                             <span
                                                 class="fw-bold text-dark"
                                                 style="font-size: 0.88rem"

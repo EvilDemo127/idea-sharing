@@ -17,7 +17,7 @@ class QuestionController extends Controller
     {
         $userId = Auth::id();
         $slug = request()->tag;
-        $questions = Question::with('user', 'comment', 'like', 'qsave', 'tag')
+        $questions = Question::with('user', 'comment.user', 'like', 'qsave', 'tag')
 
             //count of user lilke,comment,ect
             ->withCount('like', 'comment', 'qsave')
@@ -126,12 +126,8 @@ class QuestionController extends Controller
                     $qua->where('title', 'like', '%' . $search . '%')
                         ->orWhere('description', 'like', '%' . $search . '%');
                 });
-            })->get();
-
-        return response()->json([
-            'success' => true,
-            'questions' => $questions
-        ], 200);
+            })->paginate(5)->withQueryString();
+        return Inertia::render('Home',['questions' => $questions]);
     }
 
 

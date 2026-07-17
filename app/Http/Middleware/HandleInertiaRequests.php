@@ -42,7 +42,7 @@ class HandleInertiaRequests extends Middleware
           
                 'user'=> fn() =>$request->user() ? $request->user()->only('id','name','email','image'): null,
 
-                'tag'=>fn() => Tag::all(),
+                'tag'=>fn() =>Tag::select('id','name','slug')->get(),
         
             
             
