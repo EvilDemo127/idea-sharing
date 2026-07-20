@@ -57,6 +57,10 @@
                         <li><a class="dropdown-item rounded-2 py-2" href="#">🔔 Another news alert</a></li>
                     </ul>
                 </div>
+                <!-- message -->
+                <div class="border-0 mt-2 p-2 rounded-3 animate-fade-in cursor-pointer">
+                    <Link :href="route('message')"><i class="fas fa-comment"></i> </Link>
+                </div>
 
                 <!-- Avatar Dropdown with Modern Border and Shadow -->
                 <div class="dropdown position-relative">

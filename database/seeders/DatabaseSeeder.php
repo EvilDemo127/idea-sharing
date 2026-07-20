@@ -21,12 +21,12 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        // User::factory(10)->create();
-        // Question::factory(20)->create();
+        // User::factory(4)->create();
+        Question::factory(20)->create();
         QuestionTag::factory(20)->create();
         // User::factory()->create([
         //     'name' => 'user',
-        //     'email' => 'user@email.com',
+        //     'email' => 'jet@gmail.com',
         //     'password'=> Hash::make('password'),
         //     'image'=>'default.png'
         // ]);

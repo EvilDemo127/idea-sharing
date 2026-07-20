@@ -379,8 +379,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- ညာဘက်ခြမ်း: Action Buttons -->
-                                    <!-- ms-sm-auto ကြောင့် Desktop ပေါ်တွင် ခလုတ်များအားလုံး ညာဘက်အစွန်းဆုံးသို့ လှပစွာ ကပ်သွားပါမည် -->
                                     <div
                                         class="d-flex align-items-center gap-2 ms-0 ms-sm-auto flex-shrink-0"
                                     >

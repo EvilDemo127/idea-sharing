@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\QuestionCommentController;
 use App\Http\Controllers\QuestionController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\QuestionLikeController;
 use App\Http\Controllers\QuestionSaveController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\LoginCheck;
+use App\Models\Message;
 use App\Models\QuestionComment;
 
 Route::group(['middleware' => 'auth'], function () {
@@ -33,6 +35,10 @@ Route::group(['middleware' => 'auth'], function () {
      Route::get('/question/edit/{id}', [QuestionController::class, 'edit_question'])->name('edit_question');
      Route::post('/question/update/{id}', [QuestionController::class, 'question_update'])->name('update_question');
      Route::post('/question/fix/{id}', [QuestionController::class, 'question_fix'])->name('fix_question');
+
+     Route::get('message',[MessageController::class,'message'])->name('message');
+     Route::get('message/get/{id}',[MessageController::class,'get_message'])->name('get_message');
+     Route::post('message/store',[MessageController::class,'store_message'])->name('store_message');
 });
 
 Route::group(['middleware' => 'LoginCheck'], function () {
