@@ -1,123 +1,143 @@
 <template>
     <!-- Navbar Custom Shadow & Glassmorphism feel -->
-    <nav class="navbar navbar-expand-lg bg-white shadow-sm py-2 px-3 border-bottom border-light">
-        <div class="container-fluid">
-            <!-- Brand / Logo (Optional) -->
-            
+    <nav class="navbar navbar-expand-lg bg-white border-bottom border-light-subtle py-2.5 px-3">
+    <div class="container-fluid">
+        <!-- Toggle button (Mobile Menu Button) -->
+        <button
+            class="navbar-toggler border border-light-subtle p-2 shadow-none rounded-3"
+            type="button"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            @click="toggleMobileMenu"
+        >
+            <i class="fas fa-bars fs-5 text-dark"></i>
+        </button>
 
-            <!-- Toggle button (Mobile Menu Button) -->
-            <button
-                class="navbar-toggler border-0 p-2 shadow-none"
-                type="button"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-                @click="toggleMobileMenu"
-            >
-                <i class="fas fa-bars fs-5 text-dark"></i>
-            </button>
+        <!-- Collapsible wrapper -->
+        <div 
+            class="collapse navbar-collapse" 
+            :class="{ 'show': mobileMenuOpen }" 
+            id="navbarSupportedContent" 
+        >
+            <!-- Left Links (Classic Text Formatting) -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center gap-1 gap-lg-1">
+                <li class="nav-item">
+                    <Link class="nav-link px-3 fw-bold text-primary position-relative classic-active" :href="route('home')">
+                        All Questions
+                    </Link>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 fw-medium text-secondary classic-link" href="#">
+                        Answered
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 fw-medium text-secondary classic-link" href="#">
+                        Unanswered
+                    </a>
+                </li>
+            </ul>
+        </div>
 
-            <!-- Collapsible wrapper -->
-            <div 
-                class="collapse navbar-collapse transition-all" 
-                :class="{ 'show': mobileMenuOpen }" 
-                id="navbarSupportedContent" 
-            >
-                <!-- Left Links (Modern Hover Styles) -->
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1 gap-lg-3">
-                    <li class="nav-item">
-                        <Link class="nav-link px-2 text-secondary hover-link active-link" :href="route('home')">All Questions</Link>
+        <!-- Right Elements / Actions -->
+        <div class="d-flex align-items-center gap-2 gap-md-3">
+            <!-- Notifications Dropdown -->
+            <div class="dropdown">
+                <a
+                    class="position-relative text-reset d-flex align-items-center justify-content-center classic-btn"
+                    href="#"
+                    role="button"
+                    style="width: 38px; height: 38px;"
+                >
+                    <i class="fas fa-bell fs-5 text-secondary"></i>
+                    <!-- Clean notification indicator badge badge wrapper -->
+                    <span class="position-absolute top-1 end-1 translate-middle badge rounded-pill bg-danger border border-white font-monospace" style="font-size: 0.65rem; padding: 0.25em 0.45em;">
+                        1
+                    </span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end border border-light-subtle shadow-sm mt-2 p-1 rounded-2" style="min-width: 240px;">
+                    <li><h6 class="dropdown-header fw-bold text-dark px-3 py-2 fs-6">Notifications</h6></li>
+                    <li><hr class="dropdown-divider my-1 opacity-75"></li>
+                    <li><a class="dropdown-item rounded-1 py-2 px-3 text-secondary" href="#">🔔 Some news updates</a></li>
+                    <li><a class="dropdown-item rounded-1 py-2 px-3 text-secondary" href="#">🔔 Another news alert</a></li>
+                </ul>
+            </div>
+
+            <!-- Messages Short-link Icon -->
+            <div>
+                <Link 
+                    :href="route('message')" 
+                    class="text-reset d-flex align-items-center justify-content-center classic-btn"
+                    style="width: 38px; height: 38px;"
+                >
+                    <i class="fas fa-comment fs-5 text-secondary"></i>
+                </Link>
+            </div>
+
+            <!-- Avatar Dropdown with Micro-Border Frame -->
+            <div class="dropdown position-relative">
+                <div
+                    @click="dropDownMenu()"
+                    class="d-flex align-items-center rounded-circle border border-light-subtle p-0.5"
+                    role="button"
+                    style="cursor: pointer;"
+                >
+                    <img
+                                            :src="
+                                                user.image
+                                                    ? `https://lh3.googleusercontent.com/d/${user.image}`
+                                                    : '/images/default-avatar.png'
+                                            "
+                                            
+                                            class="rounded-circle border flex-shrink-0"
+                                            style="
+                                                width: 32px;
+                                                height: 32px;
+                                                object-fit: cover;
+                                            "
+                                            alt="User Avatar"
+                                        />
+                </div>
+                
+                <!-- Premium Multi-tier Dropdown Card -->
+                <ul
+                    :class="{ 'show': dropDownOpen }"
+                    class="dropdown-menu dropdown-menu-end border border-light-subtle shadow-sm mt-2 p-1 rounded-2"
+                    style="right: 0; left: auto; min-width: 220px;"
+                >
+                    <li>
+                        <div class="px-3 py-2 mb-1 border-bottom border-light">
+                            <span class="fw-bold text-dark text-truncate d-block fs-6" style="max-width: 180px;">{{ user && user.name ? user.name : 'User Name' }}</span>
+                            <span class="text-muted small text-truncate d-block" style="max-width: 180px;">{{ user && user.email ? user.email : 'user@email.com' }}</span>
+                        </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-2 text-secondary hover-link" href="#">Answered</a>
+                    <li>
+                        <Link class="dropdown-item rounded-1 py-2 px-3 d-flex align-items-center gap-2 text-secondary" :href="route('profile.edit')">
+                            <i class="fas fa-user-cog text-muted" style="width: 18px;"></i> Account Settings
+                        </Link>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-2 text-secondary hover-link" href="#">Unanswered</a>
+                    <li>
+                        <Link :href="route('question.own')" class="dropdown-item rounded-1 py-2 px-3 d-flex align-items-center gap-2 text-secondary">
+                            <i class="fas fa-question-circle text-muted" style="width: 18px;"></i> My Questions
+                        </Link>
+                    </li>
+                    <li>
+                        <Link :href="route('question.save')" class="dropdown-item rounded-1 py-2 px-3 d-flex align-items-center gap-2 text-secondary">
+                            <i class="fas fa-bookmark text-muted" style="width: 18px;"></i> Saved Lists
+                        </Link>
+                    </li>
+                    <li><hr class="dropdown-divider my-1 opacity-75"></li>
+                    <li>
+                        <a class="dropdown-item rounded-1 py-2 px-3 d-flex align-items-center gap-2 text-danger fw-bold" href="/logout">
+                            <i class="fas fa-sign-out-alt" style="width: 18px;"></i> Sign Out
+                        </a>
                     </li>
                 </ul>
             </div>
-            <!-- Right Elements / Actions -->
-            <div class="d-flex align-items-center gap-3">
-                <!-- Notifications Dropdown -->
-                <div class="dropdown">
-                    <a
-                        class="position-relative p-2 text-reset hover-icon rounded-circle d-flex align-items-center justify-content-center"
-                        href="#"
-                        role="button"
-                        style="width: 38px; height: 38px;"
-                    >
-                        <i class="fas fa-bell fs-5 text-secondary"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white" style="font-size: 0.65rem; margin-left: -8px; margin-top: 8px;">
-                            1
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2 p-2 rounded-3 animate-fade-in" style="min-width: 230px;">
-                        <li><h6 class="dropdown-header font-weight-bold text-dark px-3 py-2">Notifications</h6></li>
-                        <li><hr class="dropdown-divider my-1"></li>
-                        <li><a class="dropdown-item rounded-2 py-2" href="#">🔔 Some news updates</a></li>
-                        <li><a class="dropdown-item rounded-2 py-2" href="#">🔔 Another news alert</a></li>
-                    </ul>
-                </div>
-                <!-- message -->
-                <div class="border-0 mt-2 p-2 rounded-3 animate-fade-in cursor-pointer">
-                    <Link :href="route('message')"><i class="fas fa-comment"></i> </Link>
-                </div>
-
-                <!-- Avatar Dropdown with Modern Border and Shadow -->
-                <div class="dropdown position-relative">
-                    <div
-                        @click="dropDownMenu()"
-                        class="d-flex align-items-center rounded-circle border border-2 border-primary-subtle p-0.5 cursor-pointer avatar-wrapper"
-                        role="button"
-                        style="cursor: pointer;"
-                    >
-                        <!-- when i use https://google.com/d/${user.image} it seeing error -->
-                        <img
-                           :src="user.image ? `https://lh3.googleusercontent.com/d/${user.image}`:''"
-                            class="rounded-circle shadow-sm"
-                            style="width: 32px; height: 32px; object-fit: cover;"
-                            alt="Profile Avatar"
-                        />
-                    </div>
-                    
-                    <!-- Premium Rounded Dropdown Card -->
-                    <ul
-                        :class="{ 'show': dropDownOpen }"
-                        class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2 p-2 rounded-3"
-                        style="right: 0; left: auto; min-width: 200px;"
-                    >
-                        <li>
-                            <div class="px-3 py-2 d-flex flex-column">
-                                <span class="fw-bold text-dark text-truncate" style="max-width: 150px;">{{ user.name || 'User Name' }}</span>
-                                <span class="text-muted small text-truncate" style="max-width: 150px;">{{ user.email || 'user@email.com' }}</span>
-                            </div>
-                        </li>
-                        <li><hr class="dropdown-divider my-1"></li>
-                        <li>
-                            <Link class="dropdown-item rounded-2 py-2 d-flex align-items-center gap-2" :href="route('profile.edit')">
-                                <i class="fas fa-user-cog text-muted" style="width: 18px;"></i> My Profile
-                            </Link>
-                        </li>
-                        <li>
-                            <Link :href="route('question.own')" class="dropdown-item rounded-2 py-2 d-flex align-items-center gap-2">
-                                <i class="fas fa-question-circle text-muted" style="width: 18px;"></i> Questions
-                            </Link>
-                        </li>
-                        <li>
-                            <Link :href="route('question.save')" class="dropdown-item rounded-2 py-2 d-flex align-items-center gap-2">
-                                <i class="fas fa-bookmark text-muted" style="width: 18px;"></i> Saved Lists
-                            </Link>
-                        </li>
-                        <li><hr class="dropdown-divider my-1"></li>
-                        <li>
-                            <a class="dropdown-item rounded-2 py-2 d-flex align-items-center gap-2 text-danger fw-bold" href="/logout">
-                                <i class="fas fa-sign-out-alt text-danger" style="width: 18px;"></i> Logout
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
         </div>
-    </nav>
+    </div>
+</nav>
+
 
     <!-- Modern Floating Search Input (Centered layout option) -->
     <div class="container mt-4">

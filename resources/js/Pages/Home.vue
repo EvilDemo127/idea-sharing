@@ -334,7 +334,6 @@
                             </div>
                         </form>
                         <div class="d-flex flex-column gap-3 mb-2">
-                            <!-- Comment Card: မိုဘိုင်းလ်ဗျူးအတွက် အနားသတ် Padding ညှိထားပါသည် -->
                             <div
                                 class="bg-white rounded-3 p-3 border border-light shadow-xs"
                                 v-for="com in q.comment"

@@ -24,7 +24,9 @@ class MessageController extends Controller
         })->orWhere(function ($q) use ($authId, $id) {
             $q->where('sender_id', $id)->where('receiver_id', $authId);
         })->orderBy('created_at', 'asc')->get();
+        
         $users = User::whereNot('id', auth()->id())->get();
+
         return Inertia::render('Message',[
             'users'=>$users,
             'messages' => $messages, 

@@ -301,11 +301,10 @@
                                 class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 mb-3"
                             >
                                 <div class="d-flex align-items-center gap-2.5">
-                                    <!-- <img
+                                    <img
                                             :src="
                                                 com.user.image
-                                                    ? '/profile/' +
-                                                      com.user.image
+                                                    ? `https://lh3.googleusercontent.com/d/${com.user.image}`
                                                     : '/images/default-avatar.png'
                                             "
                                             
@@ -316,7 +315,7 @@
                                                 object-fit: cover;
                                             "
                                             alt="User Avatar"
-                                        /> -->
+                                        />
                                     <div class="d-flex flex-column lh-sm">
                                         <span
                                             class="fw-bold text-dark"
