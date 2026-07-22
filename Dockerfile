@@ -55,6 +55,6 @@ RUN npm install && npm run build
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Run migrations automatically before launching Apache
-# CMD php artisan migrate --force && php artisan db:seed --force && apache2-foreground
+CMD php artisan migrate  && php artisan db:seed  && apache2-foreground
 
 EXPOSE 80
