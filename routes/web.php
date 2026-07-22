@@ -37,7 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
      Route::post('/question/fix/{id}', [QuestionController::class, 'question_fix'])->name('fix_question');
 
      Route::get('message',[MessageController::class,'message'])->name('message');
-     Route::get('message/get/{id}',[MessageController::class,'get_message'])->name('get_message');
+     Route::get('message/get/{uuid}',[MessageController::class,'get_message'])->name('get_message');
      Route::post('message/store',[MessageController::class,'store_message'])->name('store_message');
 });
 

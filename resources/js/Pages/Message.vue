@@ -8,7 +8,7 @@
                     :key="user.id"
                     @click.prevent="selectUser(user)"
                     :class="
-                        selectedUser === user.id ? 'bg-primary text-white' : ''
+                        selectedUser === user.uuid ? 'bg-primary text-white' : ''
                     "
                     style="cursor: pointer"
                 >
@@ -46,7 +46,7 @@
                             :key="msg.id"
                             class="d-flex mb-3 align-items-end w-100"
                             :class="
-                                selectedUser == msg.sender_id
+                                authId == msg.receiver_id
                                     ? 'justify-content-start'
                                     : 'justify-content-end'
                             "
@@ -55,7 +55,7 @@
                             <div
                                 class="d-flex flex-column"
                                 :class="
-                                    selectedUser == msg.sender_id
+                                    authId == msg.receiver_id
                                         ? 'align-items-start'
                                         : 'align-items-end'
                                 "
@@ -65,15 +65,15 @@
                                     class="px-3 py-2 shadow-sm"
                                     :style="{
                                         borderRadius:
-                                            selectedUser == msg.sender_id
+                                            authId == msg.receiver_id
                                                 ? '16px 16px 16px 4px'
                                                 : '16px 16px 4px 16px',
                                         backgroundColor:
-                                            selectedUser == msg.sender_id
+                                            authId == msg.receiver_id
                                                 ? '#f1f3f5'
                                                 : '#0d6efd',
                                         color:
-                                            selectedUser == msg.sender_id
+                                            authId == msg.receiver_id
                                                 ? '#212529'
                                                 : '#ffffff',
                                     }"
@@ -99,7 +99,7 @@
                 </div>
 
                 <!-- Chat Input Form -->
-                <form @submit.prevent="sendMessage">
+                <form @submit.prevent="sendMessage" v-show="selectedUser ">
                     <div
                         class="input-group shadow-sm rounded-pill overflow-hidden"
                     >
@@ -133,31 +133,38 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { router, useForm, usePage } from "@inertiajs/vue3";
 import Master from "./Layout/Master.vue";
+import Echo from "laravel-echo";
 
 const selectedUser = ref(null);
 const notiCount =ref(0);
+const authId =usePage().props.user.id
 
-defineProps({
+const props =defineProps({
     users: Object,
     messages: Object,
-    selectedUser: [Number, String],
+    selectedUser: [Number, String,Object],
 });
+const newMessage =ref(props.messages)
 
+onMounted(()=>{
+    window.Echo.private(`chat.${authId}`).listen('.App\\Events\\MessageSent',(e)=>{
+        console.log(e);
+        newMessage.value.push(e)
+    })
+})
 const form = useForm({
     receiver_id: "",
     message: "",
 });
 
-
-
 const selectUser = (user) => {
-    selectedUser.value = user.id;
+    selectedUser.value = user.uuid;
     form.receiver_id = user.id;
     router.get(
-        route("get_message", user.id),
+        route("get_message", user.uuid),
         {},
         {
             preserveScroll: true,
@@ -168,8 +175,6 @@ const selectUser = (user) => {
 };
 
 const sendMessage = () => {
-    console.log(form);
-
     form.post(route("store_message"), {
         onSuccess: () => form.reset("message"),
     });
@@ -177,7 +182,7 @@ const sendMessage = () => {
 
 const formatChatTime = (chatDate) => {
     const date = new Date(chatDate);
-    return date.toLocaleString({
+    return date.toLocaleString('en-US',{
         hour: "2-digit",
         minute: "2-digit",
         hour12: true,
