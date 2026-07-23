@@ -31,6 +31,19 @@
                             >{{ user.name }}</span
                         >
                     </div>
+                    <div v-if="user.unread_count > 0">
+                        <span
+                            class="badge rounded-pill px-1 py-1 ms-1 shadow-sm"
+                            :class="
+                                selectedUser === user.uuid
+                                    ? 'bg-white text-primary'
+                                    : 'bg-danger text-white'
+                            "
+                            style="font-size: 0.55rem; min-width: 22px"
+                        >
+                            {{ user.unread_count }}
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -143,6 +156,7 @@ import Echo from "laravel-echo";
 const notiCount = ref(0);
 const authId = usePage().props.user.id;
 const messageContainer = ref(null);
+
 const props = defineProps({
     users: Object,
     messages: Object,
@@ -150,6 +164,7 @@ const props = defineProps({
 });
 const newMessage = ref(props.messages);
 const selectedUser = ref(props.selectedUser || null);
+const loadUser = ref(props.users);
 
 const form = useForm({
     receiver_id: "",
@@ -157,7 +172,7 @@ const form = useForm({
 });
 
 const scolBut = async () => {
-    await nextTick();// waiting to finished DOM
+    await nextTick(); // waiting to finished DOM
     if (messageContainer.value) {
         messageContainer.value.scrollTop = messageContainer.value.scrollHeight;
     }
@@ -172,19 +187,40 @@ watch(
     { deep: true },
 );
 
+watch(
+    () => props.users,
+    (newVal) => {
+        loadUser.value = newVal;
+        // scolBut();
+    },
+    { deep: true },
+);
+
 onMounted(() => {
     scolBut();
 
     window.Echo.private(`chat.${authId}`).listen(
         ".App\\Events\\MessageSent",
         (e) => {
-            console.log(e);
-            newMessage.value.push(e);
+            if (props.selectedUser === e.sender.uuid) {
+                newMessage.value.push(e);
+            } else {
+                const newMessageUser = loadUser.value.find(
+                    (user) => user.id === e.sender.id,
+                );
+                if (newMessageUser) {
+                    newMessageUser.unread_count++;
+                }
+            }
         },
     );
 });
 
 const selectUser = (user) => {
+     const target = loadUser.value.find(u => u.id === user.id);
+    if (target) {
+        target.unread_count = 0;
+    }
     selectedUser.value = user.uuid;
     form.receiver_id = user.id;
     router.get(

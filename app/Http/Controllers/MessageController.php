@@ -22,6 +22,7 @@ class MessageController extends Controller
         $authId = Auth::id();
         $search =$uuid ? User::where('uuid',$uuid)->firstOrFail() : null;
         $searchId=$search ? $search->id : null;
+        
         $messages = Message::with('sender', 'receiver')->where(function ($q) use ($authId, $searchId) {
             $q->where('sender_id', $authId)->where('receiver_id', $searchId);
         })->orWhere(function ($q) use ($authId, $searchId) {

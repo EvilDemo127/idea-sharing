@@ -41,11 +41,11 @@ class MessageSent implements ShouldBroadcast
             'receiver_id' => $this->message->receiver_id,
             'message'     => $this->message->message,
             'created_at'  => $this->message->created_at ? $this->message->created_at->toISOString() : now()->toISOString(),
-            // 'sender'      => [
-            //     'id'   => $this->message->sender?->id,
-            //     'uuid' => $this->message->sender?->uuid,
-            //     'name' => $this->message->sender?->name,
-            // ]
+            'sender'      => [
+                'id'   => $this->message->sender?->id,
+                'uuid' => $this->message->sender?->uuid,
+                'name' => $this->message->sender?->name,
+            ]
         ];
     }
 }
