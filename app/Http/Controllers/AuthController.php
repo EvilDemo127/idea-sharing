@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use Google\Service\Drive\DriveFile;
 use Google\Service\Drive;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {

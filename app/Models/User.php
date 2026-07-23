@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Override;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable,HasUlids;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -24,7 +25,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'image'
+        'image',
+        
     ];
 
     /**
@@ -65,10 +67,16 @@ class User extends Authenticatable
         return $this->hasMany(Message::class,'receiver_id ');
     }
 
-    #[Override]
     public function getUuid()
     {
         return 'uuid';
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($user){
+            $user->uuid=Str::uuid();
+        });
     }
 
 }
