@@ -20,19 +20,21 @@ class MessageController extends Controller
     public function get_message($uuid)
     {
         $authId = Auth::id();
-        $search =User::where('uuid',$uuid)->firstOrFail();
-        $searchId=$search->id;
+        $search =$uuid ? User::where('uuid',$uuid)->firstOrFail() : null;
+        $searchId=$search ? $search->id : null;
         $messages = Message::with('sender', 'receiver')->where(function ($q) use ($authId, $searchId) {
             $q->where('sender_id', $authId)->where('receiver_id', $searchId);
         })->orWhere(function ($q) use ($authId, $searchId) {
             $q->where('sender_id', $searchId)->where('receiver_id', $authId);
         })->orderBy('created_at', 'asc')->get();
 
-        $users = User::whereNot('id', auth()->id())->get();
+        $users = User::whereNot('id', auth()->id())->withCount(['recieveMessages as unread_count'=>function ($q) use ($authId){
+            $q->where('sender_id',$authId)->where('is_read',false);
+        }])->get();
         return Inertia::render('Message',[
             'users'=>$users,
             'messages' => $messages, 
-            'selectedUser' => $search->uuid
+            'selectedUser' =>$search ? $search->uuid: null
             ]);
     }
 
